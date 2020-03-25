@@ -7,12 +7,16 @@ def get_strandness(units):
 
 rule count_matrix:
     input:
-        "featureCounts/total_samples.gene_count.txt"
+        expand("star/{unit.sample}-{unit.unit}/ReadsPerGene.out.tab", unit=units.itertuples())
     output:
         "counts/all.tsv"
-    shell:
-        "sed '1d' {input} | awk 'OFS="\t" {$2=$3=$4=$5=$6=""; print $0}' | sed 's/hisat2\///g' | sed 's/.sorted.bam//g' | sed 's/Geneid/gene/g' > {output}"   
-
+    params:
+        samples=units["sample"].tolist(),
+        strand=get_strandness(units)
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/count-matrix.py"
 
 def get_deseq2_threads(wildcards=None):
     # https://twitter.com/mikelove/status/918770188568363008
