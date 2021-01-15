@@ -29,4 +29,5 @@ rule align:
               config["ref"]["annotation"], config["params"]["star"])
     threads: 24
     wrapper:
-        "0.19.4/bio/star/align"
+        #"0.19.4/bio/star/align"
+        "v0.69.0/bio/star/align"
